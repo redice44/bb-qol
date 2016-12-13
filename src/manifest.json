@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Blackboard Quality of Life",
+  "version": "0.0.1",
+  "description": "This extension adds many missing Quality of Life features for Section Designers and Instructors.",
+  "permissions": [],
+
+  "author": "Matt Thomson <red.cataclysm@gmail.com>",
+
+  "content_scripts": [
+    {
+      "matches": ["https://fiu.blackboard.com/webapps/blackboard/content/listContentEditable.jsp?*"],
+      "js": ["contentScripts/contentObject.js"]
+    }
+  ]
+}
