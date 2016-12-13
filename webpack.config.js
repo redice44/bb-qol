@@ -4,7 +4,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var config = {
   entry: {
-    'contentScripts/contentObject': './src/contentScripts/contentObject.js'
+    'contentScripts/contentFolder': './src/contentScripts/contentFolder/index.js'
   },
   output: {
     path: path.join(__dirname, 'build'),
@@ -24,7 +24,12 @@ var config = {
       {
         from: './src/manifest.json'
       }
-    ])
+    ]),
+    new webpack.DefinePlugin({
+      'process.env': {
+        DEBUG: JSON.stringify(true)
+      }
+    })
   ]
 };
 
