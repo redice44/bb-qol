@@ -1,3 +1,22 @@
 .__bbqol__availability {
-  background-color: #330000;
+  background-color: #e4a2a2;
+}
+
+.__bbqol__dense {
+  min-height: 0px !important;
+  /* Required for the dense toggle */
+  padding: 3px 30px 3px 3px !important;
+}
+
+/* Hide Icon */
+.__bbqol__dense > img.item_icon {
+  display: none;
+}
+
+.__bbqol__dense > div.item {
+  padding: 0 0 0 60px;
+}
+
+.__bbqol__dense > div.details {
+  display: none;
 }

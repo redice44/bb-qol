@@ -1,7 +1,10 @@
 import contentFolder from '../utility/contentFolder';
 import contentItem from '../utility/contentItem';
 
-import { AVAILABILITY as STYLE_AVAILABILITY } from '../styles/classes';
+import {
+  AVAILABILITY as STYLE_AVAILABILITY,
+  DENSE as STYLE_DENSE
+} from '../styles/classes';
 
 class ContentObject {
   constructor(raw) {
@@ -10,19 +13,32 @@ class ContentObject {
     this.id = temp.id;
     this.title = temp.title;
     this.availability = temp.availability;
+    this.dense = true;
 
-    this.updateStyles = this.updateStyles.bind(this);
+    this.__updateStyles = this.__updateStyles.bind(this);
 
-    this.updateStyles();
+    this.__updateStyles();
   }
 
-  updateStyles() {
+  __updateStyles() {
     let co = document.getElementById(this.domId);
+    this.__setAvailability(co);
+    this.__setDense(co);
+  }
 
+  __setAvailability(co) {
     if (this.availability) {
       co.classList.remove(STYLE_AVAILABILITY);
     } else {
       co.classList.add(STYLE_AVAILABILITY);
+    }
+  }
+
+  __setDense(co) {
+    if (this.dense) {
+      co.classList.add(STYLE_DENSE);
+    } else {
+      co.classList.remove(STYLE_DENSE);
     }
   }
 
