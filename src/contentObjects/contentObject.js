@@ -22,6 +22,12 @@ class ContentObject {
     this.__modDOM();
   }
 
+  setDense(dense) {
+    // TODO: Validate it's a boolean
+    this.dense = dense;
+    this.__setDense(document.getElementById(this.domId));
+  }
+
   toggleDense() {
     if (process.env.DEBUG) {
       console.log(`Toggle Dense for ${this.title}`, this.dense);
