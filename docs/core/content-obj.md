@@ -17,4 +17,12 @@ List of currently unsupported object types:
 
 ### Developer
 
-_Include Usage_
+#### Static Methods
+
+getType(rawDOM)
+
+Takes raw DOM input and returns the Content Object type. Primarily used to declare a new object.
+
+**Example**
+
+> TODO
