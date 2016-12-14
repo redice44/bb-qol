@@ -1,6 +1,8 @@
 import contentFolder from '../utility/contentFolder';
 import contentItem from '../utility/contentItem';
 
+import { AVAILABILITY as STYLE_AVAILABILITY } from '../styles/classes';
+
 class ContentObject {
   constructor(raw) {
     const temp = this.__build(raw);
@@ -8,6 +10,20 @@ class ContentObject {
     this.id = temp.id;
     this.title = temp.title;
     this.availability = temp.availability;
+
+    this.updateStyles = this.updateStyles.bind(this);
+
+    this.updateStyles();
+  }
+
+  updateStyles() {
+    let co = document.getElementById(this.domId);
+
+    if (this.availability) {
+      co.classList.remove(STYLE_AVAILABILITY);
+    } else {
+      co.classList.add(STYLE_AVAILABILITY);
+    }
   }
 
   __build(raw) {

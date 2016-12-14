@@ -10,7 +10,8 @@
   "content_scripts": [
     {
       "matches": ["https://fiu.blackboard.com/webapps/blackboard/content/listContentEditable.jsp?*"],
-      "js": ["contentScripts/contentFolder.js"]
+      "js": ["contentScripts/contentFolder.js"],
+      "css": ["contentScripts/contentFolder.css"]
     }
   ]
 }

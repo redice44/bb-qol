@@ -23,6 +23,10 @@ var config = {
     new CopyWebpackPlugin([
       {
         from: './src/manifest.json'
+      },
+      {
+        from: './src/styles/contentFolder.css',
+        to: './contentScripts'
       }
     ]),
     new webpack.DefinePlugin({
