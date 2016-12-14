@@ -20,3 +20,16 @@
 .__bbqol__dense > div.details {
   display: none;
 }
+
+/* Toggle Icon */
+.__bbqol__dense-toggle {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  background-color: #000;
+  visibility: visible;
+}
+
+
+
+

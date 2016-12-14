@@ -3,7 +3,8 @@ import contentItem from '../utility/contentItem';
 
 import {
   AVAILABILITY as STYLE_AVAILABILITY,
-  DENSE as STYLE_DENSE
+  DENSE as STYLE_DENSE,
+  DENSE_TOGGLE as STYLE_DENSE_TOGGLE
 } from '../styles/classes';
 
 class ContentObject {
@@ -13,11 +14,44 @@ class ContentObject {
     this.id = temp.id;
     this.title = temp.title;
     this.availability = temp.availability;
-    this.dense = true;
+    this.dense = false;
 
-    this.__updateStyles = this.__updateStyles.bind(this);
+    this.toggleDense = this.toggleDense.bind(this);
 
     this.__updateStyles();
+    this.__modDOM();
+  }
+
+  toggleDense() {
+    if (process.env.DEBUG) {
+      console.log(`Toggle Dense for ${this.id}`, this.dense);
+    }
+    this.dense = !this.dense;
+    this.__setDense(document.getElementById(this.domId));
+  }
+
+  /* Private Methods */
+
+  __modDOM() {
+    let co = document.getElementById(this.title);
+    this.__addDenseToggle(co);
+  }
+
+  __addDenseToggle(co) {
+    const q = {
+      toggleLink: 'div.item > a[title*="Hide"][href="#"]',
+      toggleParent: 'div.item'
+    };
+    let toggleParent = co.querySelector(q.toggleParent);
+    let toggle = co.querySelector(q.toggleLink);
+    if (toggle) {
+      toggle.remove();
+    }
+    toggle = document.createElement('span');
+    toggle.addEventListener('click', this.toggleDense);
+    // Add Blackboard class
+    toggle.classList.add('u_floatThis-right', STYLE_DENSE_TOGGLE);
+    toggleParent.appendChild(toggle);
   }
 
   __updateStyles() {
