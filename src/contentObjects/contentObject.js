@@ -24,7 +24,7 @@ class ContentObject {
 
   toggleDense() {
     if (process.env.DEBUG) {
-      console.log(`Toggle Dense for ${this.id}`, this.dense);
+      console.log(`Toggle Dense for ${this.title}`, this.dense);
     }
     this.dense = !this.dense;
     this.__setDense(document.getElementById(this.domId));
@@ -33,7 +33,7 @@ class ContentObject {
   /* Private Methods */
 
   __modDOM() {
-    let co = document.getElementById(this.title);
+    let co = document.getElementById(this.domId);
     this.__addDenseToggle(co);
   }
 
