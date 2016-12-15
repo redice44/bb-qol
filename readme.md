@@ -8,8 +8,10 @@ Incrementally add functionality that provides high return in efficency during th
 
 ### Projected Road map
 
-Feature Priority
-1. [Hidden Items](docs/feature/hidden-items.md)
-2. Dense mode.
-3. Batch mode.
-4. Quick actions.
+**Feature Priority** 
+1. [Hidden Items](docs/feature/hidden-items.md) 
+2. [Dense mode](docs/feature/dense.md). 
+3. Date Management Content Object Links
+4. Batch mode. 
+5. Quick actions. 
+  -  Edit, Toggle Availability, Delete
