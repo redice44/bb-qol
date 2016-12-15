@@ -12,6 +12,10 @@
       "matches": ["https://fiu.blackboard.com/webapps/blackboard/content/listContentEditable.jsp?*"],
       "js": ["contentScripts/contentFolder.js"],
       "css": ["contentScripts/contentFolder.css"]
+    },
+    {
+      "matches": ["https://fiu.blackboard.com/webapps/date-management/daterollover/showDateRolloverReport?*"],
+      "js": ["contentScripts/dateManagement.js"]
     }
   ]
 }

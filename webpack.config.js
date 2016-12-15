@@ -4,7 +4,8 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var config = {
   entry: {
-    'contentScripts/contentFolder': './src/contentScripts/contentFolder/index.js'
+    'contentScripts/contentFolder': './src/contentScripts/contentFolder/index.js',
+    'contentScripts/dateManagement': './src/contentScripts/dateManagement/index.js'
   },
   output: {
     path: path.join(__dirname, 'build'),
@@ -25,7 +26,7 @@ var config = {
         from: './src/manifest.json'
       },
       {
-        from: './src/styles/contentFolder.css',
+        from: './src/styles/*.css',
         to: './contentScripts'
       }
     ]),
