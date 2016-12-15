@@ -22,12 +22,20 @@ class ContentObject {
     this.__modDOM();
   }
 
+  /*
+   * A setter for dense flag.
+   * TODO: Make this an actual es6 setter and validate that it's a boolean.
+   */
+
   setDense(dense) {
     // TODO: Validate it's a boolean
     this.dense = dense;
     this.__setDense(document.getElementById(this.domId));
   }
 
+  /*
+   * Toggles the dense flag.
+   */
   toggleDense() {
     if (process.env.DEBUG) {
       console.log(`Toggle Dense for ${this.title}`, this.dense);
@@ -97,7 +105,8 @@ class ContentObject {
     contentObject.domId = raw.id;
     contentObject.id = raw.querySelector(q.id).id;
     contentObject.title = raw.querySelector(q.heading).innerText;
-    contentObject.availability = !raw.querySelector(q.availability);
+    let avail = raw.querySelector(q.availability);
+    contentObject.availability = !(avail && avail.innerText.includes('Availability'));
     return contentObject;
   }
 }
