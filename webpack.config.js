@@ -26,8 +26,9 @@ var config = {
         from: './src/manifest.json'
       },
       {
-        from: './src/styles/*.css',
-        to: './contentScripts'
+        context: './src/styles',
+        from: './*.css',
+        to: './contentScripts/'
       }
     ]),
     new webpack.DefinePlugin({
