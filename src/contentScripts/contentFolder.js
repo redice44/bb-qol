@@ -1,5 +1,5 @@
 import foreach from 'lodash.foreach';
-import classifier from '../../contentObjects/classifier';
+import classifier from '../contentObjects/classifier';
 // import addPrimaryActions from './primaryBar';
 
 const CO_ROOT_ID = 'content_listContainer';

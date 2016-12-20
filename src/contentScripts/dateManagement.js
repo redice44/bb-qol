@@ -1,5 +1,5 @@
 import foreach from 'lodash.foreach';
-import DateManagementObject from '../../dateManagementObjects';
+import DateManagementObject from '../dateManagementObjects';
 
 const DMO_ID = 'dateRolloverSummaryTable_databody';
 const DMO = document.getElementById(DMO_ID).children;
