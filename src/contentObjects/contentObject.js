@@ -1,5 +1,6 @@
 import contentFolder from '../utility/contentFolder';
 import contentItem from '../utility/contentItem';
+import { ACTIONS } from '../styles/classes';
 
 import {
   AVAILABILITY as STYLE_AVAILABILITY,
@@ -8,8 +9,9 @@ import {
 } from '../styles/classes';
 
 class ContentObject {
-  constructor(raw) {
+  constructor(raw, courseId) {
     const temp = this.__build(raw);
+    this.courseId = courseId;
     this.domId = temp.domId;
     this.id = temp.id;
     this.title = temp.title;
@@ -20,6 +22,10 @@ class ContentObject {
 
     this.__updateStyles();
     this.__modDOM();
+  }
+
+  addEditIcon() {
+    console.log(`Override addEditIcon for ${this.title}`);
   }
 
   /*
@@ -48,7 +54,18 @@ class ContentObject {
 
   __modDOM() {
     let co = document.getElementById(this.domId);
+    this.__addActions(co);
     this.__addDenseToggle(co);
+    this.addEditIcon();
+  }
+
+  __addActions(co) {
+    const q = 'div.item';
+    let parent = co.querySelector(q);
+    let actions = document.createElement('div');
+    actions.classList.add(ACTIONS);
+
+    parent.insertBefore(actions, parent.firstChild);
   }
 
   __addDenseToggle(co) {

@@ -2,6 +2,8 @@ import foreach from 'lodash.foreach';
 import classifier from '../contentObjects/classifier';
 // import addPrimaryActions from './primaryBar';
 
+const courseId = document.getElementById('course_id').value;
+
 const CO_ROOT_ID = 'content_listContainer';
 const CO = document.getElementById(CO_ROOT_ID).children;
 let contentObjects = [];
@@ -46,11 +48,16 @@ const addActions = () => {
   primaryActionBar.appendChild(denseAll);
 };
 
+const addEditIcons = () => {
+
+};
+
 const init = () => {
   foreach(CO, (item) => {
-    contentObjects.push(classifier(item));
+    contentObjects.push(classifier(item, courseId));
   });
   addActions();
+  addEditIcons();
 };
 
 init();

@@ -18,7 +18,7 @@ import ContentItem from '../contentItem';
 import ContentItemUtility from '../../utility/contentItem';
 import ContentFolderUtility from '../../utility/contentFolder';
 
-const classifier = (raw) => {
+const classifier = (raw, courseId) => {
   if (process.env.DEBUG) {
     console.log('Classify', raw);
   }
@@ -39,13 +39,13 @@ const classifier = (raw) => {
       switch (link) {
         case ContentFolderUtility.controller:
           // TODO: Return a content folder
-          return new ContentObject(raw);
+          return new ContentObject(raw, courseId);
         default:
           if (process.env.DEBUG) {
             console.log('Unknown', link);
           }
           // TODO: Return an error or generic object
-          return new ContentObject(raw);
+          return new ContentObject(raw, courseId);
       }
     } else {
       // Weblink...or at least not a blackboard standard controller
@@ -53,14 +53,14 @@ const classifier = (raw) => {
       if (process.env.DEBUG) {
         console.log('Weblink?', link);
       }
-      return new ContentObject(raw);
+      return new ContentObject(raw, courseId);
     }
   } else {
     if (process.env.DEBUG) {
       console.log('No Link. Assuming Item');
     }
 
-    return new ContentItem(raw);
+    return new ContentItem(raw, courseId);
   }
 };
 

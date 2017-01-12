@@ -36,6 +36,15 @@
   visibility: visible;
 }
 
+.__bbqol__actions {
+  float: left;
+}
+
+.__bbqol__actions img {
+  width: 16px;
+  height: 16px;
+  margin: 2px;
+}
 
 
 
