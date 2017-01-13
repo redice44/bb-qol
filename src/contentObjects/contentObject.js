@@ -9,15 +9,16 @@ import {
 } from '../styles/classes';
 
 class ContentObject {
-  constructor(raw, courseId) {
+  constructor(raw, data) {
     const temp = this.__build(raw);
-    this.courseId = courseId;
+    this.courseId = data.courseId;
     this.domId = temp.domId;
     this.id = temp.id;
     this.title = temp.title;
     this.availability = temp.availability;
-    this.dense = false;
+    this.editLink = data.editLink;
 
+    this.dense = false;
     this.toggleDense = this.toggleDense.bind(this);
 
     this.__updateStyles();
@@ -25,7 +26,30 @@ class ContentObject {
   }
 
   addEditIcon() {
-    console.log(`Override addEditIcon for ${this.title}`);
+    // const baseLink = 'https://fiu.blackboard.com/webapps/blackboard/execute/manageCourseItem?';
+    const iconSvg = 'PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICA8cGF0aCBkPSJNMyAxNy4yNVYyMWgzLjc1TDE3LjgxIDkuOTRsLTMuNzUtMy43NUwzIDE3LjI1ek0yMC43MSA3LjA0Yy4zOS0uMzkuMzktMS4wMiAwLTEuNDFsLTIuMzQtMi4zNGMtLjM5LS4zOS0xLjAyLS4zOS0xLjQxIDBsLTEuODMgMS44MyAzLjc1IDMuNzUgMS44My0xLjgzeiIvPg0KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4NCjwvc3ZnPg==';
+    let parent = document.getElementById(this.domId);
+    let q = `.${ACTIONS}`;
+    parent = parent.querySelector(q);
+
+    let link = document.createElement('a');
+    let icon = document.createElement('img');
+
+    // link.setAttribute('href', `${baseLink}course_id=${this.courseId}&content_id=${this.id}&dispatch=edit`);
+    link.setAttribute('href', this.editLink);
+    link.setAttribute('target', '_blank');
+    icon.setAttribute('src', `data:image/svg+xml;base64,${iconSvg}`);
+    // icon.classList.add(EDIT_ICON);
+    /* a link .savedDiv gives the menu div */
+    // request
+    //   .post('/webapps/blackboard/execute/courseInfoBasedContextMenuGenerator')
+    //   .send(`course_id=${this.courseId}&content_id=${this.id}&bIsTabContent=false`)
+    //   .end((err, res) => {
+    //     console.log(JSON.parse(res.text));
+    //   });
+
+    link.appendChild(icon);
+    parent.appendChild(link);
   }
 
   /*
@@ -115,13 +139,21 @@ class ContentObject {
     const q = {
       id: 'div.item',
       heading: 'div.item > h3',
-      availability: 'div.details .detailsLabel'
+      availability: 'div.details .detailsLabel',
+      // edit: 'span.contextMenuContainer'
     };
     let contentObject = {};
+    // let editLink = raw.querySelector(q.edit).id;
+    // editLink = editLink.substr(6);
+    // console.log(`edit id ${editLink}`);
 
     contentObject.domId = raw.id;
     contentObject.id = raw.querySelector(q.id).id;
     contentObject.title = raw.querySelector(q.heading).innerText;
+    // contentObject.editLink = raw.querySelector(q.edit);//.savedDiv;//.querySelector(`#${editLink} > a`).href;
+    // contentObject.editLink.id = `edit_me_${contentObject.domId}`;
+    // raw.appendChild(contentObject.editLink);
+    // console.log(contentObject.editLink.children);
     let avail = raw.querySelector(q.availability);
     contentObject.availability = !(avail && avail.innerText.includes('Availability'));
     return contentObject;

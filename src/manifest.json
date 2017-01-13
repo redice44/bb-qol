@@ -11,7 +11,8 @@
     {
       "matches": ["https://fiu.blackboard.com/webapps/blackboard/content/listContentEditable.jsp?*"],
       "js": ["contentScripts/contentFolder.js"],
-      "css": ["contentScripts/contentFolder.css"]
+      "css": ["contentScripts/contentFolder.css"],
+      "run_at": "document_start"
     },
     {
       "matches": ["https://fiu.blackboard.com/webapps/date-management/daterollover/showDateRolloverReport?*"],

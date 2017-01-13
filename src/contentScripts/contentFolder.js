@@ -2,12 +2,14 @@ import foreach from 'lodash.foreach';
 import classifier from '../contentObjects/classifier';
 // import addPrimaryActions from './primaryBar';
 
-const courseId = document.getElementById('course_id').value;
+let courseId;
 
 const CO_ROOT_ID = 'content_listContainer';
-const CO = document.getElementById(CO_ROOT_ID).children;
+let CO;
 let contentObjects = [];
 let denseAllState = false;
+
+let editLinks = {};
 
 const toggleAll = () => {
   if (process.env.DEBUG) {
@@ -60,4 +62,71 @@ const init = () => {
   addEditIcons();
 };
 
-init();
+// init();
+
+const getEditLink = (dom) => {
+  let link = dom.querySelector('ul');
+  link = link.children[1];
+  link = link.querySelector('a').href;
+
+  return link;
+};
+
+// document.addEventListener('DOMNodeRemoved', test);
+
+/*
+  Observe only the content object list.
+
+  Initial document sent to browser contains important action links that
+  are then parsed and removed. We check for that event and process that
+  data before it is removed from the DOM. We also use this opportunity
+  to build our data structures.
+*/
+
+let contentObjectObserver = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+      console.log('co ob', mutation);
+      /*
+        Should only fire once when the action links are removed for each item
+
+        Build our data structure.
+      */
+      // TODO: Add other action links, remove, move, delete, etc.
+      if (mutation.removedNodes.length > 0 && mutation.removedNodes[0].nodeName !== '#text') {
+        let data = {
+          courseId: courseId,
+          editLink: getEditLink(mutation.removedNodes[0])
+        };
+        contentObjects.push(classifier(mutation.target.parentNode.parentNode, data));
+      }
+  });
+});
+
+/*
+  Observes as the DOM loads and checks to see when the Content Objects
+  are loaded. Stop the observer once it detects the content item list
+  object is loaded and start only observing that section.
+
+  We also know the Course ID section of the DOM is loaded, so we also
+  get that information.
+*/
+let loadObserver = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.target.id === 'content_listContainer') {
+      console.log('loader ob', mutation);
+      contentObjectObserver.observe(document.getElementById('content_listContainer'), observerConfig);
+      courseId = document.getElementById('course_id').value;
+      CO = document.getElementById(CO_ROOT_ID).children;
+      loadObserver.disconnect();
+    }
+  });
+});
+
+const observerConfig = {
+  childList: true,
+  subtree: true
+};
+
+
+
+loadObserver.observe(document, observerConfig);
