@@ -18,15 +18,15 @@ import ContentItem from '../contentItem';
 import ContentItemUtility from '../../utility/contentItem';
 import ContentFolderUtility from '../../utility/contentFolder';
 
-const classifier = (raw, data) => {
+const classifier = (config) => {
   if (process.env.DEBUG) {
-    console.log('Classify', raw);
+    console.log('Classify', config);
   }
   const q = 'div.item > h3 > a';
   const startTarget = 'webapps';
   const endTarget = '?';
 
-  let link = raw.querySelector(q);
+  let link = config.rootNode.querySelector(q);
   if (link) {
     // validate it's a bb webapp before destroying url. Could be weblink.
     if (link.href.indexOf(startTarget) >= 0) {
@@ -39,13 +39,13 @@ const classifier = (raw, data) => {
       switch (link) {
         case ContentFolderUtility.controller:
           // TODO: Return a content folder
-          return new ContentObject(raw, data);
+          return new ContentObject(config);
         default:
           if (process.env.DEBUG) {
             console.log('Unknown', link);
           }
           // TODO: Return an error or generic object
-          return new ContentObject(raw, data);
+          return new ContentObject(config);
       }
     } else {
       // Weblink...or at least not a blackboard standard controller
@@ -53,14 +53,14 @@ const classifier = (raw, data) => {
       if (process.env.DEBUG) {
         console.log('Weblink?', link);
       }
-      return new ContentObject(raw, data);
+      return new ContentObject(config);
     }
   } else {
     if (process.env.DEBUG) {
       console.log('No Link. Assuming Item');
     }
 
-    return new ContentItem(raw, data);
+    return new ContentItem(config);
   }
 };
 

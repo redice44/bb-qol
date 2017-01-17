@@ -60,15 +60,6 @@ const init = () => {
 
 // init();
 
-const getEditLink = (dom) => {
-  console.log('dom', dom);
-  let link = dom.querySelector('ul');
-  link = link.children[1];
-  link = link.querySelector('a').href;
-
-  return link;
-};
-
 // document.addEventListener('DOMNodeRemoved', test);
 
 /*
@@ -89,13 +80,16 @@ let contentObjectObserver = new MutationObserver((mutations) => {
       */
       // TODO: Add other action links, remove, move, delete, etc.
       if (mutation.removedNodes.length > 0 &&
-          mutation.removedNodes[0].nodeName !== '#text' &&
-          mutation.removedNodes[0].id.includes('cmdiv')) {
-        let data = {
-          courseId: courseId,
-          editLink: getEditLink(mutation.removedNodes[0])
+      mutation.removedNodes[0].nodeName !== '#text' &&
+      mutation.removedNodes[0].id.includes('cmdiv')) {
+        console.log('co loader removed', mutation.removedNodes[0]);
+        console.log('co loader parent', mutation.target.parentNode.parentNode);
+        let config = {
+          rootNode: mutation.target.parentNode.parentNode,
+          actionNode: mutation.removedNodes[0],
+          courseId: courseId
         };
-        contentObjects.push(classifier(mutation.target.parentNode.parentNode, data));
+        contentObjects.push(classifier(config));
       }
   });
 

@@ -8,21 +8,41 @@ import {
   DENSE_TOGGLE as STYLE_DENSE_TOGGLE
 } from '../styles/classes';
 
+// Indexes of each action in the action node
+const actionLink = {
+  edit: 1,
+  copy: 2,
+  move: 3,
+  delete: 4
+};
+
 class ContentObject {
-  constructor(raw, data) {
-    const temp = this.__build(raw);
-    this.courseId = data.courseId;
+  constructor(config) {
+    const temp = this.__build(config.rootNode);
+    this.courseId = config.courseId;
     this.domId = temp.domId;
     this.id = temp.id;
     this.title = temp.title;
     this.availability = temp.availability;
-    this.editLink = data.editLink;
+    this.editLink = this.getActionLink(config.actionNode, actionLink.edit);
+    this.copyLink = this.getActionLink(config.actionNode, actionLink.copy);
+    this.moveLink = this.getActionLink(config.actionNode, actionLink.move);
+    this.deleteLink = this.getActionLink(config.actionNode, actionLink.delete);
 
     this.dense = false;
     this.toggleDense = this.toggleDense.bind(this);
 
     this.__updateStyles();
     this.__modDOM();
+  }
+
+
+  getActionLink(node, action) {
+    let link = node.querySelector('ul');
+    link = link.children[action];
+    link = link.querySelector('a').href;
+
+    return link;
   }
 
   addEditIcon() {
