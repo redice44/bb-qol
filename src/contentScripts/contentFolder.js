@@ -55,16 +55,13 @@ const addEditIcons = () => {
 };
 
 const init = () => {
-  foreach(CO, (item) => {
-    contentObjects.push(classifier(item, courseId));
-  });
   addActions();
-  addEditIcons();
 };
 
 // init();
 
 const getEditLink = (dom) => {
+  console.log('dom', dom);
   let link = dom.querySelector('ul');
   link = link.children[1];
   link = link.querySelector('a').href;
@@ -85,14 +82,15 @@ const getEditLink = (dom) => {
 
 let contentObjectObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
-      console.log('co ob', mutation);
       /*
         Should only fire once when the action links are removed for each item
 
         Build our data structure.
       */
       // TODO: Add other action links, remove, move, delete, etc.
-      if (mutation.removedNodes.length > 0 && mutation.removedNodes[0].nodeName !== '#text') {
+      if (mutation.removedNodes.length > 0 &&
+          mutation.removedNodes[0].nodeName !== '#text' &&
+          mutation.removedNodes[0].id.includes('cmdiv')) {
         let data = {
           courseId: courseId,
           editLink: getEditLink(mutation.removedNodes[0])
@@ -100,6 +98,13 @@ let contentObjectObserver = new MutationObserver((mutations) => {
         contentObjects.push(classifier(mutation.target.parentNode.parentNode, data));
       }
   });
+
+  // Stop Observing once all Content Objects are created
+  if (contentObjects.length >= CO.length) {
+    contentObjectObserver.disconnect();
+    console.log('Disconnecting', contentObjects);
+    init();
+  }
 });
 
 /*
@@ -113,7 +118,6 @@ let contentObjectObserver = new MutationObserver((mutations) => {
 let loadObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if (mutation.target.id === 'content_listContainer') {
-      console.log('loader ob', mutation);
       contentObjectObserver.observe(document.getElementById('content_listContainer'), observerConfig);
       courseId = document.getElementById('course_id').value;
       CO = document.getElementById(CO_ROOT_ID).children;
