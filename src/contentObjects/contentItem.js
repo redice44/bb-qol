@@ -1,5 +1,3 @@
-import request from 'superagent';
-
 import ContentObject from './contentObject';
 import ContentItemUtility from '../utility/contentItem';
 

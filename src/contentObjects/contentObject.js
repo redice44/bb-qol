@@ -1,3 +1,5 @@
+import request from 'superagent';
+
 import contentFolder from '../utility/contentFolder';
 import contentItem from '../utility/contentItem';
 import { ACTIONS } from '../styles/classes';
@@ -16,6 +18,8 @@ const actionLink = {
   delete: 4
 };
 
+const nonceQuery = 'input[name="blackboard.platform.security.NonceUtil.nonce.ajax"]';
+
 class ContentObject {
   constructor(config) {
     const temp = this.__build(config.rootNode);
@@ -28,6 +32,7 @@ class ContentObject {
     this.copyLink = this.getActionLink(config.actionNode, actionLink.copy);
     this.moveLink = this.getActionLink(config.actionNode, actionLink.move);
     this.deleteLink = this.getActionLink(config.actionNode, actionLink.delete);
+    // this.nonce = document.querySelector('input[name="blackboard.platform.security.NonceUtil.nonce.ajax"]').value;
 
     this.dense = false;
     this.toggleDense = this.toggleDense.bind(this);
@@ -35,7 +40,6 @@ class ContentObject {
     this.__updateStyles();
     this.__modDOM();
   }
-
 
   getActionLink(node, action) {
     let link = node.querySelector('ul');
@@ -45,21 +49,92 @@ class ContentObject {
     return link;
   }
 
-  addEditIcon() {
-    // const baseLink = 'https://fiu.blackboard.com/webapps/blackboard/execute/manageCourseItem?';
-    const iconSvg = 'PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICA8cGF0aCBkPSJNMyAxNy4yNVYyMWgzLjc1TDE3LjgxIDkuOTRsLTMuNzUtMy43NUwzIDE3LjI1ek0yMC43MSA3LjA0Yy4zOS0uMzkuMzktMS4wMiAwLTEuNDFsLTIuMzQtMi4zNGMtLjM5LS4zOS0xLjAyLS4zOS0xLjQxIDBsLTEuODMgMS44MyAzLjc1IDMuNzUgMS44My0xLjgzeiIvPg0KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4NCjwvc3ZnPg==';
+  addActionIcons() {
+    const editIconSvg = 'PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICA8cGF0aCBkPSJNMyAxNy4yNVYyMWgzLjc1TDE3LjgxIDkuOTRsLTMuNzUtMy43NUwzIDE3LjI1ek0yMC43MSA3LjA0Yy4zOS0uMzkuMzktMS4wMiAwLTEuNDFsLTIuMzQtMi4zNGMtLjM5LS4zOS0xLjAyLS4zOS0xLjQxIDBsLTEuODMgMS44MyAzLjc1IDMuNzUgMS44My0xLjgzeiIvPg0KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4NCjwvc3ZnPg==';
+    const copyIconSvg = 'PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+DQogICAgPHBhdGggZD0iTTE2IDFINGMtMS4xIDAtMiAuOS0yIDJ2MTRoMlYzaDEyVjF6bTMgNEg4Yy0xLjEgMC0yIC45LTIgMnYxNGMwIDEuMS45IDIgMiAyaDExYzEuMSAwIDItLjkgMi0yVjdjMC0xLjEtLjktMi0yLTJ6bTAgMTZIOFY3aDExdjE0eiIvPg0KPC9zdmc+';
+    const moveIconSvg = 'PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICA8cGF0aCBkPSJNMTAgOWg0VjZoM2wtNS01LTUgNWgzdjN6bS0xIDFINlY3bC01IDUgNSA1di0zaDN2LTR6bTE0IDJsLTUtNXYzaC0zdjRoM3YzbDUtNXptLTkgM2gtNHYzSDdsNSA1IDUtNWgtM3YtM3oiLz4NCiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+DQo8L3N2Zz4=';
+    const deleteIconSvg = 'PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICA8cGF0aCBkPSJNNiAxOWMwIDEuMS45IDIgMiAyaDhjMS4xIDAgMi0uOSAyLTJWN0g2djEyek0xOSA0aC0zLjVsLTEtMWgtNWwtMSAxSDV2MmgxNFY0eiIvPg0KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4NCjwvc3ZnPg==';
+
+    this.addActionIcon(this.editLink, editIconSvg);
+    this.addActionIcon(this.copyLink, copyIconSvg);
+    this.addActionIcon(this.moveLink, moveIconSvg);
+    this.addDeleteIcon(deleteIconSvg);
+  }
+
+  addDeleteIcon(icon) {
     let parent = document.getElementById(this.domId);
     let q = `.${ACTIONS}`;
     parent = parent.querySelector(q);
 
-    let link = document.createElement('a');
-    let icon = document.createElement('img');
+    let linkNode = document.createElement('a');
+    let iconNode = document.createElement('img');
 
-    link.setAttribute('href', this.editLink);
-    link.setAttribute('target', '_blank');
-    icon.setAttribute('src', `data:image/svg+xml;base64,${iconSvg}`);
-    link.appendChild(icon);
-    parent.appendChild(link);
+    linkNode.setAttribute('href', '#');
+    linkNode.addEventListener('click', this.deleteMe.bind(this));
+
+    iconNode.setAttribute('src', `data:image/svg+xml;base64,${icon}`);
+    linkNode.appendChild(iconNode);
+    parent.appendChild(linkNode);
+  }
+
+  deleteMe() {
+    let link = this.deleteLink.substr(40);
+    link = link.split(',');
+    let title = link[1];
+    title = title.substr(1, title.length - 2);
+    link = link[0];
+    link = link.substr(1, link.length - 2);
+
+    if (window.confirm(`Delete ${title}?`)) {
+      let nonce = document.querySelector(nonceQuery);
+      console.log('nonce', nonce);
+      console.log(`this ${this.title} | link title ${title}`);
+      console.log(`link ${link}`);
+
+      request.post(link)
+        .type('form')
+        .send(`course_id=${this.courseId}`)
+        .send(`contentTitle=${title}`)
+        .send(`blackboard.platform.security.NonceUtil.nonce.ajax=${nonce.value}`)
+        .end((err, res) => {
+          if (err) {
+            // TODO: Handle various errors, 404, 5xx etc
+            console.log(err);
+          }
+          console.log(res);
+          if (!res.header['x-blackboard-errorid']) {
+            // Parse the string to a html document
+            let parser = new DOMParser();
+            nonce.value = this.__parseNonce(parser.parseFromString(res.text, 'text/html'));
+            console.log(`New nonce: ${nonce.value}`);
+
+            // Delete dom node
+            document.getElementById(this.domId).remove();
+
+          } else {
+            console.log(`Blackboard Error ID: ${res.header['x-blackboard-errorid']}`);
+          }
+        });
+    }
+  }
+
+  __parseNonce(dom) {
+    return dom.querySelector('input[name="blackboard.platform.security.NonceUtil.nonce.ajax"]').value;
+  }
+
+  addActionIcon(link, icon) {
+    let parent = document.getElementById(this.domId);
+    let q = `.${ACTIONS}`;
+    parent = parent.querySelector(q);
+
+    let linkNode = document.createElement('a');
+    let iconNode = document.createElement('img');
+
+    linkNode.setAttribute('href', link);
+    linkNode.setAttribute('target', '_blank');
+    iconNode.setAttribute('src', `data:image/svg+xml;base64,${icon}`);
+    linkNode.appendChild(iconNode);
+    parent.appendChild(linkNode);
   }
 
   /*
@@ -90,7 +165,7 @@ class ContentObject {
     let co = document.getElementById(this.domId);
     this.__addActions(co);
     this.__addDenseToggle(co);
-    this.addEditIcon();
+    this.addActionIcons();
   }
 
   __addActions(co) {
