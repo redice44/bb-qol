@@ -69,7 +69,6 @@ class ContentObject {
     let linkNode = document.createElement('a');
     let iconNode = document.createElement('img');
 
-    linkNode.setAttribute('href', '#');
     linkNode.addEventListener('click', this.deleteMe.bind(this));
 
     iconNode.setAttribute('src', `data:image/svg+xml;base64,${icon}`);
@@ -101,8 +100,8 @@ class ContentObject {
             // TODO: Handle various errors, 404, 5xx etc
             console.log(err);
           }
-          console.log(res);
           if (!res.header['x-blackboard-errorid']) {
+            console.log(res);
             // Parse the string to a html document
             let parser = new DOMParser();
             nonce.value = this.__parseNonce(parser.parseFromString(res.text, 'text/html'));
